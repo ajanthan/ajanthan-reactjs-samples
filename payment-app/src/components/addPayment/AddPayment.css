@@ -1,0 +1,44 @@
+
+.form-container{
+    display: flex;
+    justify-content: space-evenly;
+}
+.payment-form{
+    width: 25rem;
+    height: 14rem;
+    background-color: rgba(21, 21, 51, 0.2);
+    border: .05rem solid grey;
+    border-radius: 2%;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+}
+.payment-form h1{
+    align-self: center;
+}
+.payment-form .label-group{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 3rem;
+    margin-right: 3rem;
+    margin-bottom: 0.5rem;
+}
+.payment-form .label-group .label{
+    font-weight: 500;
+}
+.payment-form .label-group input{
+    background-color:  rgba(21, 21, 51, 0.2);
+    border: .05rem solid rgb(158, 157, 157);
+    border-radius: 4%;
+}
+.payment-form input[type=submit]{
+    background-color:  rgba(21, 21, 51, 0.2);
+    border: .08rem solid rgb(158, 157, 157);
+    border-radius: 4%;
+    margin-top: 1rem;
+    width: 8rem;
+    height: 2rem;
+    align-self: center;
+    font-weight: 500;
+}
