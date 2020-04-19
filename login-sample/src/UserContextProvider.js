@@ -6,18 +6,27 @@ import {
     BaseTokenRequestHandler,
     TokenRequest,
     GRANT_TYPE_AUTHORIZATION_CODE,
-    FetchRequestor
+    FetchRequestor,
+    DefaultCrypto
 } from '@openid/appauth';
 import Config from './Config'
 import { Base64 } from 'js-base64';
-import UserContext from './UserContext'
+import UserContext from './UserContext';
+import './UserContextProvider.css';
 
 const reducer = (state, action) => {
     switch (action.type) {
         case 'login':
             console.log('Logging in ....');
-            return { ...state, isUserLoggedIn: true, user: action.payload.subject };
+            return {
+                ...state,
+                isUserLoggedIn: true,
+                user: action.payload.subject,
+                token: action.payload.idToken
+            };
         case 'logout':
+            sessionStorage.clear();
+            window.location.assign(`${Config.logout_url}?id_token_hint=${state.token}&post_logout_redirect_uri=${Config.redirect_url}&state=${new DefaultCrypto().generateRandom(5)}`);
             return { ...state, isUserLoggedIn: false, user: '' };
         default:
             return state;
@@ -55,12 +64,13 @@ const UserContextProvider = ({ ...props }) => {
                         tokenHandler.performTokenRequest(Config.epConfig, tokenRequest)
                             .then(res => {
                                 if (res) {
+                                    const idToken = res.idToken;
                                     const jwtPayload = Base64.decode(res.idToken.split('.')[1]);
                                     subject = JSON.parse(jwtPayload).sub;
                                     console.log('ID token', subject);
                                     sessionStorage.setItem('isLoggedIn', true);
                                     sessionStorage.setItem('subject', subject);
-                                    dispatch({ type: 'login', payload: { subject: subject, err: false } });
+                                    dispatch({ type: 'login', payload: { subject: subject, idToken: idToken, err: false } });
                                 }
                             });
                         console.log("Getting authz code from constructor")
@@ -93,9 +103,11 @@ const UserContextProvider = ({ ...props }) => {
         <UserContext.Provider value={{
             ...userContext, handleLogin: () => {
                 handleLogin();
+            }, handleLogout:()=>{
+                dispatch({ type: 'logout'});
             }
         }}>
-            {props.children}
+            {userContext.isUserLoggedIn ? props.children : <div className="container-wrapper"> <button className='lg-btn' onClick={handleLogin} type='button'>Login here</button></div>}
         </UserContext.Provider>
     );
 };

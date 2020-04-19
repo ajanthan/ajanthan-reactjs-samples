@@ -1,13 +1,27 @@
-import React,{useContext} from 'react';
+import React,{useContext,useState} from 'react';
 import UserContext from './UserContext'
 import './Home.css';
 
 function Home() {
 const userContext=useContext(UserContext);
+const [showProfile,setShowProfile]=useState(false);
+const handleProfileClick=()=>{
+  setShowProfile(!showProfile);
+}
   return (
-    <div className="container-wrapper">     
-      {userContext.isUserLoggedIn ? <div className="container"> <h1> Hello {userContext.user}!</h1> </div>:<button className='lg-btn' onClick={userContext.handleLogin} type='button'>Login here</button>} 
-    </div>
+    <header>
+    <nav>
+      <a href='#' onClick={handleProfileClick}>{userContext.user}</a>
+    </nav> 
+    {showProfile ?
+    <div className="popup"> 
+      <ul>
+        <li><a onClick={userContext.handleLogout}>logout</a></li>
+      </ul>
+    </div> 
+    :null }
+    </header>
+
   );
 }
 
