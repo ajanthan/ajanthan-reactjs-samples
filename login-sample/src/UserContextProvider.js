@@ -103,8 +103,8 @@ const UserContextProvider = ({ ...props }) => {
         <UserContext.Provider value={{
             ...userContext, handleLogin: () => {
                 handleLogin();
-            }, handleLogout:()=>{
-                dispatch({ type: 'logout'});
+            }, handleLogout: () => {
+                dispatch({ type: 'logout' });
             }
         }}>
             {userContext.isUserLoggedIn ? props.children : <div className="container-wrapper"> <button className='lg-btn' onClick={handleLogin} type='button'>Login here</button></div>}
